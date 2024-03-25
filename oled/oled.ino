@@ -30,7 +30,7 @@ U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R1,/* reset=*/ U8X8_PIN_NONE, /* c
 // This is the main function, and the one you will want to transplant to your
 // code. Pass the battery charge percent and it will draw the battery with
 // the corresponding charge level.
-void showBatteryLevel(uint8_t percent)
+void showBatteryLevel(uint8_t percent, uint8_t speed)
 {
     uint8_t width;
 
@@ -85,6 +85,51 @@ void showBatteryLevel(uint8_t percent)
             offset += 3;
         }
     }
+//speedometer code
+
+      u8g2.drawBox(31,70,4,4);
+
+
+    if(speed > 0 && speed <=5){
+      //0 position
+      u8g2.drawLine(29,72,7,72);
+      u8g2.drawLine(29,71,7,71);
+    }
+
+    if(speed > 5 && speed <= 15){
+      //1st position
+      u8g2.drawLine(29,72,8,66);
+      u8g2.drawLine(29,71,8,65);
+    }
+    
+    //2nd position
+    if(speed > 15 && speed <= 25){
+      u8g2.drawLine(29,71,13,61);
+      u8g2.drawLine(29,70,13,60);
+    }
+    
+    //3rd position
+    if(speed>25 && speed <= 35){
+      u8g2.drawLine(29,69,17,55);
+      u8g2.drawLine(29,68,17,54);
+    }
+
+    //4th position
+    if(speed>35 && speed < 45){
+      u8g2.drawLine(30,68,25,50);
+      u8g2.drawLine(31,68,25,49);
+    }
+    //middle position
+    if(speed >= 45 && speed <= 55){ 
+      u8g2.drawLine(32,68,32,45);
+      u8g2.drawLine(33,68,33,45);
+    }
+
+    //last 
+    if(speed >= 95 && speed <=100){
+      u8g2.drawLine(35,72,62,72);
+      u8g2.drawLine(35,71,62,71);
+    }
 
     u8g2.sendBuffer();
 }
@@ -93,15 +138,64 @@ void ShowBatteryPercent(uint8_t percent){
   char cstr[16];
   itoa(percent, cstr, 10);
   u8g2.setFont(u8g2_font_torussansbold8_8r);
-  do {
+ do {
     u8g2.setFont(u8g2_font_6x10_mr);
     u8g2.drawStr(32,8, cstr);
     u8g2.drawStr(45,8, "%");
-  } while ( u8g2.nextPage() );
+ }while ( u8g2.nextPage() );
   delay(1000);
 }
 
+//not used right now...
+void Speedometer(uint8_t speed){
+    u8g2.clearBuffer();
 
+    u8g2.drawBox(31,70,4,4);
+
+
+    if(speed > 0 && speed <=5){
+      //0 position
+      u8g2.drawLine(29,72,7,72);
+      u8g2.drawLine(29,71,7,71);
+    }
+
+    if(speed > 5 && speed <= 15){
+      //1st position
+      u8g2.drawLine(29,72,8,66);
+      u8g2.drawLine(29,71,8,65);
+    }
+    
+    //2nd position
+    if(speed > 15 && speed <= 25){
+      u8g2.drawLine(29,71,13,61);
+      u8g2.drawLine(29,70,13,60);
+    }
+    
+    //3rd position
+    if(speed>25 && speed <= 35){
+      u8g2.drawLine(29,69,17,55);
+      u8g2.drawLine(29,68,17,54);
+    }
+
+    //4th position
+    if(speed>35 && speed < 45){
+      u8g2.drawLine(30,68,25,50);
+      u8g2.drawLine(31,68,25,49);
+    }
+    //middle position
+    if(speed >= 45 && speed <= 55){ 
+      u8g2.drawLine(32,68,32,45);
+      u8g2.drawLine(33,68,33,45);
+    }
+
+    //last 
+    if(speed >= 95 && speed <=100){
+      u8g2.drawLine(35,72,62,72);
+      u8g2.drawLine(35,71,62,71);
+    }
+        u8g2.sendBuffer();
+
+}
 
 void setup()
 {
@@ -111,21 +205,27 @@ void setup()
 
 // A variable to test our code.
 uint8_t percent = 100;
-
-
+// A variable to test the speedometer
+uint8_t speed = 0;
 
 void loop()
 {
     // Some test code to scan all the battery levels
-    showBatteryLevel(percent);
+    showBatteryLevel(percent,speed);
     ShowBatteryPercent(percent);
-    
+
     if (percent)
         percent--;
-    else
+    else{
         percent = 100;
+    }
     
-    delay(5);
+    if (speed==101)
+        speed = 0;
+    else{
+        speed++;
+    }
+    delay(100);
 }
 
 
