@@ -88,7 +88,8 @@ void showBatteryLevel(uint8_t percent, uint8_t speed)
 //speedometer code
 
       u8g2.drawBox(31,70,4,4);
-
+      u8g2.drawCircle(32,74,28);
+      u8g2.drawLine(4, 74, 60, 74);
 
     if(speed > 0 && speed <=5){
       //0 position
@@ -96,14 +97,14 @@ void showBatteryLevel(uint8_t percent, uint8_t speed)
       u8g2.drawLine(29,71,7,71);
     }
 
-    if(speed > 5 && speed <= 15){
+    else if(speed > 5 && speed <= 15){
       //1st position
       u8g2.drawLine(29,72,8,66);
       u8g2.drawLine(29,71,8,65);
     }
     
     //2nd position
-    if(speed > 15 && speed <= 25){
+    else if(speed > 15 && speed <= 25){
       u8g2.drawLine(29,71,13,61);
       u8g2.drawLine(29,70,13,60);
     }
@@ -115,21 +116,43 @@ void showBatteryLevel(uint8_t percent, uint8_t speed)
     }
 
     //4th position
-    if(speed>35 && speed < 45){
+    else if(speed>35 && speed < 45){
       u8g2.drawLine(30,68,25,50);
       u8g2.drawLine(31,68,25,49);
     }
     //middle position
-    if(speed >= 45 && speed <= 55){ 
-      u8g2.drawLine(32,68,32,45);
-      u8g2.drawLine(33,68,33,45);
+    else if(speed >= 45 && speed <= 55){ 
+      u8g2.drawLine(32,68,32,48);
+      u8g2.drawLine(33,68,33,48);
+    }
+//mirror 4th
+    if(speed > 55 && speed <= 65){
+      u8g2.drawLine(34,68,39,49);
+      u8g2.drawLine(33,68,39,50);
+    }
+//mirror 3rd
+    if(speed > 65 && speed <= 75 ){
+      u8g2.drawLine(36,68,47,54);
+      u8g2.drawLine(36,69,47,55);
+    }
+//mirror 2nd
+    if(speed > 75 && speed <= 85 ){
+      u8g2.drawLine(36,70,52,60);
+      u8g2.drawLine(36,71,51,61);
+    }
+//mirror 1st
+    if(speed > 85 && speed < 95 ){
+      u8g2.drawLine(36,70,56,65);
+      u8g2.drawLine(36,71,57,66);
     }
 
     //last 
     if(speed >= 95 && speed <=100){
-      u8g2.drawLine(35,72,62,72);
-      u8g2.drawLine(35,71,62,71);
+      u8g2.drawLine(36,72,58,72);
+      u8g2.drawLine(36,71,58,71);
     }
+  u8g2.setFont(u8g2_font_squeezed_r6_tr);
+  u8g2.drawStr(24,98, "KM/H");
 
     u8g2.sendBuffer();
 }
@@ -140,14 +163,51 @@ void ShowBatteryPercent(uint8_t percent){
   u8g2.setFont(u8g2_font_torussansbold8_8r);
  do {
     u8g2.setFont(u8g2_font_6x10_mr);
-    u8g2.drawStr(32,8, cstr);
+    if(percent == 100){
+      u8g2.drawStr(28,8, cstr);
+    }
+    else if (percent <=99 && percent >=10){
+      u8g2.drawStr(32,8, cstr);
+    }
+
+    else if (percent <= 9){
+      u8g2.drawStr(38,8, cstr);
+    }
     u8g2.drawStr(45,8, "%");
+
  }while ( u8g2.nextPage() );
-  delay(1000);
+  delay(100);
 }
 
+void iShowSpeed(uint8_t speed){
+  char cstr[16];
+  itoa(speed, cstr, 10);
+  u8g2.setFont(u8g2_font_crox3c_tn);
+ do {
+    u8g2.setFont(u8g2_font_crox3c_tn);
+    if(speed<10)
+  {
+    u8g2.drawStr(26,89, cstr);  
+  }
+  else{
+    u8g2.drawStr(20,89, cstr);
+      } 
+ }while ( u8g2.nextPage() );
+  delay(100);
+}
+/*
+void displayKPH(){
+  do {
+  u8g2.setFont(u8g2_font_squeezed_r6_tr);
+  u8g2.drawStr(24,98, "KM/H");
+  }while ( u8g2.nextPage() );
+}
+*/ 
+
+
+
 //not used right now...
-void Speedometer(uint8_t speed){
+/*void Speedometer(uint8_t speed){
     u8g2.clearBuffer();
 
     u8g2.drawBox(31,70,4,4);
@@ -172,20 +232,30 @@ void Speedometer(uint8_t speed){
     }
     
     //3rd position
-    if(speed>25 && speed <= 35){
+    if(speed >25 && speed <= 35){
       u8g2.drawLine(29,69,17,55);
       u8g2.drawLine(29,68,17,54);
     }
 
     //4th position
-    if(speed>35 && speed < 45){
+    if(speed >35 && speed < 45){
       u8g2.drawLine(30,68,25,50);
       u8g2.drawLine(31,68,25,49);
     }
     //middle position
-    if(speed >= 45 && speed <= 55){ 
+    if(speed >= 45 && speed < 55){ 
       u8g2.drawLine(32,68,32,45);
       u8g2.drawLine(33,68,33,45);
+    }
+
+    if(speed >= 55 && speed < 65){
+      u8g2.drawLine(33,68,39,49);
+      u8g2.drawLine(34,68,39,50);
+    }
+    
+    if(speed > 65 && speed <= 75 ){
+      u8g2.drawLine(35,68,47,55);
+      u8g2.drawLine(35,68,47,54);
     }
 
     //last 
@@ -193,10 +263,11 @@ void Speedometer(uint8_t speed){
       u8g2.drawLine(35,72,62,72);
       u8g2.drawLine(35,71,62,71);
     }
+    
         u8g2.sendBuffer();
 
 }
-
+*/
 void setup()
 {
     // Initialize the display object
@@ -213,6 +284,8 @@ void loop()
     // Some test code to scan all the battery levels
     showBatteryLevel(percent,speed);
     ShowBatteryPercent(percent);
+    iShowSpeed(speed);
+
 
     if (percent)
         percent--;
@@ -220,10 +293,10 @@ void loop()
         percent = 100;
     }
     
-    if (speed==101)
+    if (speed > 99)
         speed = 0;
     else{
-        speed++;
+        speed = speed + 2;
     }
     delay(100);
 }
